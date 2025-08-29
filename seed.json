@@ -1,0 +1,461 @@
+{
+  "categories": [
+    {
+      "id": "cat_premium",
+      "name": "Premium",
+      "rateNormal": 5.0,
+      "rateSpecial": 8.0
+    },
+    {
+      "id": "cat_regular",
+      "name": "Regular",
+      "rateNormal": 3.0,
+      "rateSpecial": 5.0
+    },
+    {
+      "id": "cat_economy",
+      "name": "Economy",
+      "rateNormal": 1.5,
+      "rateSpecial": 2.5
+    },
+    {
+      "id": "cat_vip",
+      "name": "VIP",
+      "rateNormal": 10.0,
+      "rateSpecial": 15.0
+    }
+  ],
+  "gates": [
+    {
+      "id": "gate_1",
+      "name": "Main Entrance",
+      "zoneIds": [
+        "zone_a",
+        "zone_b",
+        "zone_f"
+      ],
+      "location": "North"
+    },
+    {
+      "id": "gate_2",
+      "name": "East Entrance",
+      "zoneIds": [
+        "zone_a",
+        "zone_c",
+        "zone_d"
+      ],
+      "location": "East"
+    },
+    {
+      "id": "gate_3",
+      "name": "South Entrance",
+      "zoneIds": [
+        "zone_b",
+        "zone_e",
+        "zone_f"
+      ],
+      "location": "South"
+    },
+    {
+      "id": "gate_4",
+      "name": "West Entrance",
+      "zoneIds": [
+        "zone_g",
+        "zone_h"
+      ],
+      "location": "West"
+    },
+    {
+      "id": "gate_5",
+      "name": "VIP Entrance",
+      "zoneIds": [
+        "zone_vip",
+        "zone_a"
+      ],
+      "location": "Executive Building"
+    }
+  ],
+  "zones": [
+    {
+      "id": "zone_a",
+      "name": "Zone A",
+      "categoryId": "cat_premium",
+      "gateIds": [
+        "gate_1",
+        "gate_2",
+        "gate_5"
+      ],
+      "totalSlots": 100,
+      "occupied": 60,
+      "open": true
+    },
+    {
+      "id": "zone_b",
+      "name": "Zone B",
+      "categoryId": "cat_premium",
+      "gateIds": [
+        "gate_1",
+        "gate_3"
+      ],
+      "totalSlots": 80,
+      "occupied": 20,
+      "open": true
+    },
+    {
+      "id": "zone_c",
+      "name": "Zone C",
+      "categoryId": "cat_regular",
+      "gateIds": [
+        "gate_2"
+      ],
+      "totalSlots": 80,
+      "occupied": 40,
+      "open": true
+    },
+    {
+      "id": "zone_d",
+      "name": "Zone D",
+      "categoryId": "cat_regular",
+      "gateIds": [
+        "gate_2"
+      ],
+      "totalSlots": 60,
+      "occupied": 10,
+      "open": true
+    },
+    {
+      "id": "zone_e",
+      "name": "Zone E",
+      "categoryId": "cat_economy",
+      "gateIds": [
+        "gate_3"
+      ],
+      "totalSlots": 50,
+      "occupied": 25,
+      "open": true
+    },
+    {
+      "id": "zone_f",
+      "name": "Zone F",
+      "categoryId": "cat_economy",
+      "gateIds": [
+        "gate_1",
+        "gate_3"
+      ],
+      "totalSlots": 40,
+      "occupied": 5,
+      "open": true
+    },
+    {
+      "id": "zone_g",
+      "name": "Zone G",
+      "categoryId": "cat_regular",
+      "gateIds": [
+        "gate_4"
+      ],
+      "totalSlots": 70,
+      "occupied": 35,
+      "open": true
+    },
+    {
+      "id": "zone_h",
+      "name": "Zone H",
+      "categoryId": "cat_economy",
+      "gateIds": [
+        "gate_4"
+      ],
+      "totalSlots": 120,
+      "occupied": 100,
+      "open": true
+    },
+    {
+      "id": "zone_vip",
+      "name": "VIP Zone",
+      "categoryId": "cat_vip",
+      "gateIds": [
+        "gate_5"
+      ],
+      "totalSlots": 30,
+      "occupied": 15,
+      "open": true
+    },
+    {
+      "id": "zone_closed",
+      "name": "Maintenance Zone",
+      "categoryId": "cat_regular",
+      "gateIds": [
+        "gate_2"
+      ],
+      "totalSlots": 50,
+      "occupied": 0,
+      "open": false
+    }
+  ],
+  "rushHours": [
+    {
+      "id": "rush_1",
+      "weekDay": 1,
+      "from": "07:00",
+      "to": "09:00"
+    },
+    {
+      "id": "rush_2",
+      "weekDay": 1,
+      "from": "17:00",
+      "to": "19:00"
+    },
+    {
+      "id": "rush_3",
+      "weekDay": 5,
+      "from": "07:30",
+      "to": "09:30"
+    },
+    {
+      "id": "rush_4",
+      "weekDay": 5,
+      "from": "16:30",
+      "to": "18:30"
+    },
+    {
+      "id": "rush_5",
+      "weekDay": 6,
+      "from": "10:00",
+      "to": "14:00"
+    }
+  ],
+  "vacations": [
+    {
+      "id": "vac_1",
+      "name": "Year End",
+      "from": "2025-12-24",
+      "to": "2026-01-03"
+    },
+    {
+      "id": "vac_2",
+      "name": "Summer Break",
+      "from": "2025-07-01",
+      "to": "2025-07-15"
+    },
+    {
+      "id": "vac_3",
+      "name": "National Day",
+      "from": "2025-09-23",
+      "to": "2025-09-25"
+    }
+  ],
+  "subscriptions": [
+    {
+      "id": "sub_001",
+      "userName": "Ali",
+      "active": true,
+      "category": "cat_premium",
+      "cars": [
+        {
+          "plate": "ABC-123",
+          "brand": "Toyota",
+          "model": "Corolla",
+          "color": "white"
+        }
+      ],
+      "startsAt": "2025-01-01T00:00:00Z",
+      "expiresAt": "2026-01-01T00:00:00Z",
+      "currentCheckins": []
+    },
+    {
+      "id": "sub_002",
+      "userName": "Sara",
+      "active": true,
+      "category": "cat_regular",
+      "cars": [
+        {
+          "plate": "XZY-456",
+          "brand": "Nissan",
+          "model": "Sunny",
+          "color": "black"
+        }
+      ],
+      "startsAt": "2025-07-01T00:00:00Z",
+      "expiresAt": "2026-07-01T00:00:00Z",
+      "currentCheckins": [
+        {
+          "ticketId": "t_010",
+          "zoneId": "zone_c",
+          "checkinAt": "2025-08-24T08:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "sub_003",
+      "userName": "Mohammed",
+      "active": true,
+      "category": "cat_economy",
+      "cars": [
+        {
+          "plate": "DEF-789",
+          "brand": "Honda",
+          "model": "Civic",
+          "color": "blue"
+        },
+        {
+          "plate": "GHI-012",
+          "brand": "Hyundai",
+          "model": "Elantra",
+          "color": "silver"
+        }
+      ],
+      "startsAt": "2025-06-01T00:00:00Z",
+      "expiresAt": "2025-12-01T00:00:00Z",
+      "currentCheckins": []
+    },
+    {
+      "id": "sub_004",
+      "userName": "Fatima",
+      "active": true,
+      "category": "cat_vip",
+      "cars": [
+        {
+          "plate": "VIP-001",
+          "brand": "Mercedes",
+          "model": "S-Class",
+          "color": "black"
+        }
+      ],
+      "startsAt": "2025-01-01T00:00:00Z",
+      "expiresAt": "2026-01-01T00:00:00Z",
+      "currentCheckins": [
+        {
+          "ticketId": "t_015",
+          "zoneId": "zone_vip",
+          "checkinAt": "2025-08-27T06:30:00Z"
+        }
+      ]
+    },
+    {
+      "id": "sub_005",
+      "userName": "Ahmed",
+      "active": true,
+      "category": "cat_regular",
+      "cars": [
+        {
+          "plate": "JKL-345",
+          "brand": "Kia",
+          "model": "Optima",
+          "color": "red"
+        }
+      ],
+      "startsAt": "2025-03-01T00:00:00Z",
+      "expiresAt": "2026-03-01T00:00:00Z",
+      "currentCheckins": []
+    },
+    {
+      "id": "sub_006",
+      "userName": "Layla",
+      "active": false,
+      "category": "cat_premium",
+      "cars": [
+        {
+          "plate": "EXP-999",
+          "brand": "BMW",
+          "model": "X5",
+          "color": "white"
+        }
+      ],
+      "startsAt": "2024-01-01T00:00:00Z",
+      "expiresAt": "2025-01-01T00:00:00Z",
+      "currentCheckins": []
+    }
+  ],
+  "users": [
+    {
+      "id": "admin_1",
+      "username": "admin",
+      "name": "Admin",
+      "role": "admin",
+      "password": "adminpass"
+    },
+    {
+      "id": "admin_2",
+      "username": "superadmin",
+      "name": "Super Admin",
+      "role": "admin",
+      "password": "superpass"
+    },
+    {
+      "id": "emp_1",
+      "username": "emp1",
+      "name": "Employee One",
+      "role": "employee",
+      "password": "pass1"
+    },
+    {
+      "id": "emp_2",
+      "username": "emp2",
+      "name": "Employee Two",
+      "role": "employee",
+      "password": "pass2"
+    },
+    {
+      "id": "emp_3",
+      "username": "emp3",
+      "name": "Night Shift Employee",
+      "role": "employee",
+      "password": "pass3"
+    },
+    {
+      "id": "emp_4",
+      "username": "checkpoint1",
+      "name": "Checkpoint Alpha",
+      "role": "employee",
+      "password": "checkpoint1"
+    },
+    {
+      "id": "emp_5",
+      "username": "checkpoint2",
+      "name": "Checkpoint Beta",
+      "role": "employee",
+      "password": "checkpoint2"
+    }
+  ],
+  "tickets": [
+    {
+      "id": "t_010",
+      "type": "subscriber",
+      "zoneId": "zone_c",
+      "gateId": "gate_2",
+      "checkinAt": "2025-08-24T08:00:00Z",
+      "checkoutAt": null
+    },
+    {
+      "id": "t_015",
+      "type": "subscriber",
+      "zoneId": "zone_vip",
+      "gateId": "gate_5",
+      "checkinAt": "2025-08-27T06:30:00Z",
+      "checkoutAt": null
+    },
+    {
+      "id": "t_020",
+      "type": "visitor",
+      "zoneId": "zone_e",
+      "gateId": "gate_3",
+      "checkinAt": "2025-08-27T07:15:00Z",
+      "checkoutAt": "2025-08-27T09:45:00Z"
+    },
+    {
+      "id": "t_025",
+      "type": "visitor",
+      "zoneId": "zone_a",
+      "gateId": "gate_1",
+      "checkinAt": "2025-08-27T08:00:00Z",
+      "checkoutAt": null
+    },
+    {
+      "id": "t_030",
+      "type": "visitor",
+      "zoneId": "zone_h",
+      "gateId": "gate_4",
+      "checkinAt": "2025-08-27T07:30:00Z",
+      "checkoutAt": null
+    }
+  ]
+}

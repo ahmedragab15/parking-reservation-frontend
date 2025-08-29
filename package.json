@@ -1,0 +1,38 @@
+{
+  "name": "parking-backend-starter",
+  "version": "1.0.0",
+  "description": "Minimal Express + ws backend for Parking Reservation System (starter).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:gate": "jest tests/gate-screen.test.js",
+    "test:checkpoint": "jest tests/checkpoint-screen.test.js",
+    "test:admin": "jest tests/admin-dashboard.test.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ws": "^8.13.0",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "server.js",
+      "!node_modules/**"
+    ],
+    "coverageDirectory": "coverage",
+    "verbose": true
+  }
+}

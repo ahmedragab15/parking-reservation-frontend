@@ -1,0 +1,544 @@
+> parking-backend-starter@1.0.0 test
+> jest
+
+ FAIL  tests/admin-dashboard.test.js
+  Admin Dashboard Flow Tests
+    1. Admin Authentication and Access Control
+      ✓ Should successfully login with admin credentials (22 ms)
+      ✓ Should reject non-admin users from admin endpoints (7 ms)
+      ✕ Should allow multiple admin accounts (5 ms)
+    2. Parking State Reports and Monitoring
+      ✓ Should fetch comprehensive parking state report (5 ms)
+      ✓ Should show accurate subscriber counts per zone category (3 ms)
+      ✓ Should show correct occupancy and availability calculations (9 ms)
+      ✓ Should identify closed zones in reports (5 ms)
+    3. Zone Management and Control
+      ✕ Should successfully open a closed zone (4 ms)
+      ✓ Should successfully close an open zone (3 ms)
+      ✓ Should handle opening non-existent zone (3 ms)
+      ✕ Should handle boolean conversion for zone open status (3 ms)
+    4. Category Rate Management
+      ✕ Should update category rates successfully (4 ms)
+      ✕ Should handle partial category updates (4 ms)
+      ✕ Should handle non-existent category update (3 ms)
+    5. Rush Hours Management
+      ✕ Should add new rush hour window (4 ms)
+      ✕ Should handle multiple rush windows for same day (3 ms)
+    6. Vacation Management
+      ✕ Should add new vacation period (3 ms)
+      ✕ Should handle overlapping vacation periods (2 ms)
+    7. Subscription Management
+      ✕ Should list all subscriptions for admin review (5 ms)
+      ✕ Should show both active and inactive subscriptions (2 ms)
+      ✕ Should show current check-ins for subscriptions (3 ms)
+    8. System Monitoring and Analytics
+      ✓ Should provide comprehensive system overview (3 ms)
+      ✕ Should identify high-occupancy zones (3 ms)
+      ✕ Should track subscription distribution across categories (2 ms)
+    9. Integration Test - Complete Admin Workflow
+      ✕ Should complete comprehensive admin management session (5 ms)
+      ✕ Should handle rapid sequential admin operations (8 ms)
+
+  ● Admin Dashboard Flow Tests › 1. Admin Authentication and Access Control › Should allow multiple admin accounts
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Super Admin"
+    Received: undefined
+
+      78 |
+      79 |       expect(response.body.user.role).toBe('admin');
+    > 80 |       expect(response.body.user.name).toBe('Super Admin');
+         |                                       ^
+      81 |     });
+      82 |   });
+      83 |
+
+      at Object.toBe (tests/admin-dashboard.test.js:80:39)
+
+  ● Admin Dashboard Flow Tests › 3. Zone Management and Control › Should successfully open a closed zone
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      161 |       const testServer = getTestServer();
+      162 |       const zone = testServer.db.zones.find(z => z.id === 'zone_closed');
+    > 163 |       expect(zone.open).toBe(true);
+          |                         ^
+      164 |     });
+      165 |
+      166 |     test('Should successfully close an open zone', async () => {
+
+      at Object.toBe (tests/admin-dashboard.test.js:163:25)
+
+  ● Admin Dashboard Flow Tests › 3. Zone Management and Control › Should handle boolean conversion for zone open status
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      193 |         .expect(200);
+      194 |
+    > 195 |       expect(response1.body.open).toBe(false);
+          |                                   ^
+      196 |
+      197 |       // Test with number 1
+      198 |       const response2 = await request(app)
+
+      at Object.toBe (tests/admin-dashboard.test.js:195:35)
+
+  ● Admin Dashboard Flow Tests › 4. Category Rate Management › Should update category rates successfully
+
+    expected 200 "OK", got 404 "Not Found"
+
+      219 |         .set('Authorization', `Bearer ${adminToken}`)
+      220 |         .send(updateData)
+    > 221 |         .expect(200);
+          |          ^
+      222 |
+      223 |       expect(response.body.name).toBe("Premium Plus");
+      224 |       expect(response.body.rateNormal).toBe(6.0);
+
+      at Object.expect (tests/admin-dashboard.test.js:221:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Admin Dashboard Flow Tests › 4. Category Rate Management › Should handle partial category updates
+
+    expected 200 "OK", got 404 "Not Found"
+
+      242 |         .set('Authorization', `Bearer ${adminToken}`)
+      243 |         .send(updateData)
+    > 244 |         .expect(200);
+          |          ^
+      245 |
+      246 |       expect(response.body.rateNormal).toBe(7.5);
+      247 |       expect(response.body.rateSpecial).toBe(5.0); // Should remain unchanged
+
+      at Object.expect (tests/admin-dashboard.test.js:244:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Admin Dashboard Flow Tests › 4. Category Rate Management › Should handle non-existent category update
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Category not found"
+    Received: undefined
+
+      255 |         .expect(404);
+      256 |
+    > 257 |       expect(response.body.message).toBe('Category not found');
+          |                                     ^
+      258 |     });
+      259 |   });
+      260 |
+
+      at Object.toBe (tests/admin-dashboard.test.js:257:37)
+
+  ● Admin Dashboard Flow Tests › 5. Rush Hours Management › Should add new rush hour window
+
+    expected 201 "Created", got 404 "Not Found"
+
+      271 |         .set('Authorization', `Bearer ${adminToken}`)
+      272 |         .send(rushData)
+    > 273 |         .expect(201);
+          |          ^
+      274 |
+      275 |       expect(response.body).toHaveProperty('id');
+      276 |       expect(response.body.weekDay).toBe(3);
+
+      at Object.expect (tests/admin-dashboard.test.js:273:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Admin Dashboard Flow Tests › 5. Rush Hours Management › Should handle multiple rush windows for same day
+
+    expected 201 "Created", got 404 "Not Found"
+
+      301 |         .set('Authorization', `Bearer ${adminToken}`)
+      302 |         .send(rushData1)
+    > 303 |         .expect(201);
+          |          ^
+      304 |
+      305 |       const response2 = await request(app)
+      306 |         .post('/api/v1/admin/rush-hours')
+
+      at Object.expect (tests/admin-dashboard.test.js:303:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Admin Dashboard Flow Tests › 6. Vacation Management › Should add new vacation period
+
+    expected 201 "Created", got 404 "Not Found"
+
+      325 |         .set('Authorization', `Bearer ${adminToken}`)
+      326 |         .send(vacationData)
+    > 327 |         .expect(201);
+          |          ^
+      328 |
+      329 |       expect(response.body).toHaveProperty('id');
+      330 |       expect(response.body.name).toBe("Spring Break");
+
+      at Object.expect (tests/admin-dashboard.test.js:327:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Admin Dashboard Flow Tests › 6. Vacation Management › Should handle overlapping vacation periods
+
+    expected 201 "Created", got 404 "Not Found"
+
+      351 |         .set('Authorization', `Bearer ${adminToken}`)
+      352 |         .send(vacation1)
+    > 353 |         .expect(201);
+          |          ^
+      354 |
+      355 |       const response2 = await request(app)
+      356 |         .post('/api/v1/admin/vacations')
+
+      at Object.expect (tests/admin-dashboard.test.js:353:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Admin Dashboard Flow Tests › 7. Subscription Management › Should list all subscriptions for admin review
+
+    expected 200 "OK", got 404 "Not Found"
+
+      368 |         .get('/api/v1/admin/subscriptions')
+      369 |         .set('Authorization', `Bearer ${adminToken}`)
+    > 370 |         .expect(200);
+          |          ^
+      371 |
+      372 |       expect(response.body).toHaveLength(6); // 6 subscriptions in seed data
+      373 |
+
+      at Object.expect (tests/admin-dashboard.test.js:370:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Admin Dashboard Flow Tests › 7. Subscription Management › Should show both active and inactive subscriptions
+
+    expected 200 "OK", got 404 "Not Found"
+
+      384 |         .get('/api/v1/admin/subscriptions')
+      385 |         .set('Authorization', `Bearer ${adminToken}`)
+    > 386 |         .expect(200);
+          |          ^
+      387 |
+      388 |       const activeCount = response.body.filter(s => s.active).length;
+      389 |       const inactiveCount = response.body.filter(s => !s.active).length;
+
+      at Object.expect (tests/admin-dashboard.test.js:386:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Admin Dashboard Flow Tests › 7. Subscription Management › Should show current check-ins for subscriptions
+
+    expected 200 "OK", got 404 "Not Found"
+
+      397 |         .get('/api/v1/admin/subscriptions')
+      398 |         .set('Authorization', `Bearer ${adminToken}`)
+    > 399 |         .expect(200);
+          |          ^
+      400 |
+      401 |       const checkedInSub = response.body.find(s => s.currentCheckins && s.currentCheckins.length > 0);
+      402 |       expect(checkedInSub).toBeDefined();
+
+      at Object.expect (tests/admin-dashboard.test.js:399:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Admin Dashboard Flow Tests › 8. System Monitoring and Analytics › Should identify high-occupancy zones
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0.8
+    Received:   0.75
+
+      436 |       // zone_h should be high occupancy (90/120)
+      437 |       const zoneH = response.body.find(z => z.name === 'Zone H');
+    > 438 |       expect(zoneH.occupied / zoneH.totalSlots).toBeGreaterThan(0.8);
+          |                                                 ^
+      439 |     });
+      440 |
+      441 |     test('Should track subscription distribution across categories', async () => {
+
+      at Object.toBeGreaterThan (tests/admin-dashboard.test.js:438:49)
+
+  ● Admin Dashboard Flow Tests › 8. System Monitoring and Analytics › Should track subscription distribution across categories
+
+    expected 200 "OK", got 404 "Not Found"
+
+      443 |         .get('/api/v1/admin/subscriptions')
+      444 |         .set('Authorization', `Bearer ${adminToken}`)
+    > 445 |         .expect(200);
+          |          ^
+      446 |
+      447 |       const categoryDistribution = {};
+      448 |       subsResponse.body.forEach(sub => {
+
+      at Object.expect (tests/admin-dashboard.test.js:445:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Admin Dashboard Flow Tests › 9. Integration Test - Complete Admin Workflow › Should complete comprehensive admin management session
+
+    expect(received).toBeDefined()
+
+    Received: undefined
+
+      476 |
+      477 |       const closedZone = stateResponse.body.find(z => !z.open);
+    > 478 |       expect(closedZone).toBeDefined();
+          |                          ^
+      479 |
+      480 |       // 3. Open the closed zone
+      481 |       const openResponse = await request(app)
+
+      at Object.toBeDefined (tests/admin-dashboard.test.js:478:26)
+
+  ● Admin Dashboard Flow Tests › 9. Integration Test - Complete Admin Workflow › Should handle rapid sequential admin operations
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      572 |       // All should succeed
+      573 |       results.forEach(result => {
+    > 574 |         expect(result.status).toBe(200);
+          |                               ^
+      575 |       });
+      576 |     });
+      577 |   });
+
+      at toBe (tests/admin-dashboard.test.js:574:31)
+          at Array.forEach (<anonymous>)
+      at Object.forEach (tests/admin-dashboard.test.js:573:15)
+
+ FAIL  tests/gate-screen.test.js
+  Gate Screen Flow Tests
+    1. Gate Screen Load and Data Fetching
+      ✓ Should fetch all gates successfully (53 ms)
+      ✓ Should fetch zones for specific gate (10 ms)
+      ✓ Should return zones accessible through gate_1 (10 ms)
+    2. Visitor Check-in Flow
+      ✓ Should successfully check-in visitor to available zone (187 ms)
+      ✓ Should reject visitor check-in to closed zone (5 ms)
+      ✕ Should reject visitor check-in when no slots available (6 ms)
+      ✓ Should validate required fields for visitor check-in (5 ms)
+    3. Subscriber Check-in Flow
+      ✓ Should verify valid subscription (7 ms)
+      ✓ Should successfully check-in subscriber with valid category access (12 ms)
+      ✓ Should reject subscriber check-in for wrong category (14 ms)
+      ✓ Should reject inactive subscription (4 ms)
+      ✓ Should handle non-existent subscription (3 ms)
+    4. Zone State and Availability Calculations
+      ✓ Should correctly calculate zone availability for visitors (4 ms)
+      ✓ Should show different availability for different gates (5 ms)
+      ✓ Should handle VIP zone access correctly (3 ms)
+    5. Integration Test - Complete Gate Flow
+      ✓ Should complete full visitor journey at gate (7 ms)
+      ✓ Should complete full subscriber journey at gate (7 ms)
+
+  ● Gate Screen Flow Tests › 2. Visitor Check-in Flow › Should reject visitor check-in when no slots available
+
+    expected 409 "Conflict", got 201 "Created"
+
+      128 |         .post('/api/v1/tickets/checkin')
+      129 |         .send(checkinData)
+    > 130 |         .expect(409);
+          |          ^
+      131 |
+      132 |       expect(response.body.message).toBe('No available slots for visitors');
+      133 |     });
+
+      at Object.expect (tests/gate-screen.test.js:130:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+ FAIL  tests/checkpoint-screen.test.js
+  Checkpoint Screen Flow Tests
+    1. Employee Authentication Flow
+      ✓ Should successfully login with valid employee credentials (34 ms)
+      ✓ Should reject invalid employee credentials (6 ms)
+      ✕ Should successfully login checkpoint-specific employees (10 ms)
+    2. Ticket Lookup and Information Display
+      ✕ Should display existing checked-in ticket information (17 ms)
+      ✕ Should handle non-existent ticket lookup (4 ms)
+      ✓ Should display subscription details for subscriber tickets (5 ms)
+    3. Standard Checkout Flow
+      ✓ Should successfully checkout visitor ticket with breakdown (247 ms)
+      ✓ Should successfully checkout subscriber ticket with zero amount (4 ms)
+      ✓ Should reject checkout of already checked-out ticket (3 ms)
+      ✓ Should handle checkout of non-existent ticket (4 ms)
+    4. Force Convert to Visitor Flow
+      ✕ Should convert subscriber to visitor when plate mismatch occurs (6 ms)
+      ✓ Should show subscription car details for employee verification (4 ms)
+    5. VIP and Special Category Handling
+      ✓ Should handle VIP checkout with higher rates (6 ms)
+      ✓ Should handle economy zone checkout with lower rates (6 ms)
+    6. Authentication and Authorization
+      ✓ Should require authentication for checkout operations (4 ms)
+      ✓ Should allow admin to perform checkout operations (7 ms)
+    7. Integration Test - Complete Checkpoint Flow
+      ✕ Should complete full checkpoint workflow (3 ms)
+      ✕ Should handle plate mismatch scenario with force conversion (7 ms)
+
+  ● Checkpoint Screen Flow Tests › 1. Employee Authentication Flow › Should successfully login checkpoint-specific employees
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Checkpoint Alpha"
+    Received: undefined
+
+      62 |
+      63 |       expect(response.body.user.role).toBe('employee');
+    > 64 |       expect(response.body.user.name).toBe('Checkpoint Alpha');
+         |                                       ^
+      65 |     });
+      66 |   });
+      67 |
+
+      at Object.toBe (tests/checkpoint-screen.test.js:64:39)
+
+  ● Checkpoint Screen Flow Tests › 2. Ticket Lookup and Information Display › Should display existing checked-in ticket information
+
+    expected 200 "OK", got 404 "Not Found"
+
+      72 |         .get('/api/v1/tickets/t_010')
+      73 |         .set('Authorization', `Bearer ${employeeToken}`)
+    > 74 |         .expect(200);
+         |          ^
+      75 |
+      76 |       expect(response.body).toHaveProperty('id', 't_010');
+      77 |       expect(response.body).toHaveProperty('type', 'subscriber');
+
+      at Object.expect (tests/checkpoint-screen.test.js:74:10)
+      ----
+      at Test._assertStatus (node_modules/supertest/lib/test.js:252:14)
+      at node_modules/supertest/lib/test.js:308:13
+      at Test._assertFunction (node_modules/supertest/lib/test.js:285:13)
+      at Test.assert (node_modules/supertest/lib/test.js:164:23)
+      at Server.localAssert (node_modules/supertest/lib/test.js:120:14)
+
+  ● Checkpoint Screen Flow Tests › 2. Ticket Lookup and Information Display › Should handle non-existent ticket lookup
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Ticket not found"
+    Received: undefined
+
+      88 |         .expect(404);
+      89 |
+    > 90 |       expect(response.body.message).toBe('Ticket not found');
+         |                                     ^
+      91 |     });
+      92 |
+      93 |     test('Should display subscription details for subscriber tickets', async () => {
+
+      at Object.toBe (tests/checkpoint-screen.test.js:90:37)
+
+  ● Checkpoint Screen Flow Tests › 4. Force Convert to Visitor Flow › Should convert subscriber to visitor when plate mismatch occurs
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+      220 |
+      221 |       // Should have charged as visitor (amount > 0 for VIP zone)
+    > 222 |       expect(checkoutResponse.body.amount).toBeGreaterThan(0);
+          |                                            ^
+      223 |
+      224 |       // Verify breakdown shows visitor rates
+      225 |       const breakdown = checkoutResponse.body.breakdown;
+
+      at Object.toBeGreaterThan (tests/checkpoint-screen.test.js:222:44)
+
+  ● Checkpoint Screen Flow Tests › 7. Integration Test - Complete Checkpoint Flow › Should complete full checkpoint workflow
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Checkpoint Beta"
+    Received: undefined
+
+      340 |
+      341 |       const checkpointToken = loginResponse.body.token;
+    > 342 |       expect(loginResponse.body.user.name).toBe('Checkpoint Beta');
+          |                                            ^
+      343 |
+      344 |       // 2. Create a ticket to checkout
+      345 |       const checkinResponse = await request(app)
+
+      at Object.toBe (tests/checkpoint-screen.test.js:342:44)
+
+  ● Checkpoint Screen Flow Tests › 7. Integration Test - Complete Checkpoint Flow › Should handle plate mismatch scenario with force conversion
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+      421 |
+      422 |       // Should be charged as visitor despite being subscriber
+    > 423 |       expect(checkoutResponse.body.amount).toBeGreaterThan(0);
+          |                                            ^
+      424 |       expect(checkoutResponse.body.breakdown[0].rate).toBe(1.5); // Economy visitor rate
+      425 |     });
+      426 |   });
+
+      at Object.toBeGreaterThan (tests/checkpoint-screen.test.js:423:44)
+
+Test Suites: 3 failed, 3 total
+Tests:       24 failed, 37 passed, 61 total
+Snapshots:   0 total
+Time:        2.978 s
+Ran all test suites.
