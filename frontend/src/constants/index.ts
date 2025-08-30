@@ -5,14 +5,14 @@ export const navItems: INavItems[] = [
     },
     {
         name: "Gate Check-in",
-        href: "/gate-checkin",
+        href: "/gate",
     },
     {
-        name: "Employee Checkout",
-        href: "/employee-checkout",
+        name: "Checkpoint Checkout",
+        href: "/checkpoint",
     },
     {
         name: "Admin Dashboard",
-        href: "/admin-dashboard",
+        href: "/admin",
     },
 ];
