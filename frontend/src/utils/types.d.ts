@@ -26,13 +26,19 @@ declare interface Gate {
 }
 
 declare interface Zone {
-    id: string;
-    name: string;
-    categoryId: string;
-    gateIds: string[];
-    totalSlots: number;
-    occupied: number;
-    open: boolean;
+  id: string;
+  name: string;
+  categoryId: string;
+  gateIds: string[];
+  totalSlots: number;
+  occupied: number;
+  free: number;
+  reserved: number;
+  availableForVisitors: number;
+  availableForSubscribers: number;
+  rateNormal: number;
+  rateSpecial: number;
+  open: boolean;
 }
 
 declare interface RushHour {
@@ -101,4 +107,34 @@ declare interface ParkingSystemData {
     subscriptions: Subscription[];
     users: User[];
     tickets: Ticket[];
+}
+
+declare interface CheckinRequest {
+  gateId: string;
+  zoneId?: string;
+  type: "visitor" | "subscriber";
+  subscriptionId?: string;
+}
+
+declare interface CheckinResponse {
+  ticket: Ticket;
+  message: string;
+}
+
+declare interface BreakdownItem {
+  from: string;
+  to: string;
+  hours: number;
+  rateMode: "normal" | "special";
+  rate: number;
+  amount: number;
+}
+
+declare interface CheckoutResponse {
+  ticketId: string;
+  checkinAt: string;
+  checkoutAt: string;
+  durationHours: number;
+  breakdown: BreakdownItem[];
+  amount: number;
 }

@@ -5,7 +5,7 @@ import { AxiosRequestConfig } from "axios";
 interface ICustomQuery {
   queryKey: string[];
   url: string;
-  config?: AxiosRequestConfig;
+  config?: AxiosRequestConfig & { enabled?: boolean };
 }
 
 const useCustomQuery = ({ queryKey, url, config }: ICustomQuery) => {
