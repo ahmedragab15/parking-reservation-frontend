@@ -138,3 +138,8 @@ declare interface CheckoutResponse {
   breakdown: BreakdownItem[];
   amount: number;
 }
+
+declare interface IWeekDays {
+  value: number;
+  label: string;
+}
