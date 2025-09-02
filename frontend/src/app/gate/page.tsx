@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import useCustomQuery from "@/hooks/useCustomQuery";
 import { MapPin, Layers } from "lucide-react";
-import GatesSkeleton from "@/components/GatesSkeleton";
-import ErrorMessage from "@/components/ErrorMessage";
+import GatesSkeleton from "@/components/gate/GatesCardsSkeleton";
+import ErrorMessage from "@/components/shared/ErrorMessage";
 
-export default function Page() {
+export default function GatesPage() {
   const {
     isLoading,
     data: gates,
@@ -19,8 +19,7 @@ export default function Page() {
   });
 
   if (isLoading) return <GatesSkeleton />;
-
-  if (isError) return <ErrorMessage message="Failed to fetch gates"/>;
+  if (isError) return <ErrorMessage message="Failed to fetch gates" />;
 
   return (
     <div className="container mx-auto py-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
