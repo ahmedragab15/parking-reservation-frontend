@@ -73,6 +73,7 @@ Create a `.env` in the project root inside frontend/:
 ## Project Structure
 
 frontend/
+
     ├── src/
         ├── app/
             ├── admin/
