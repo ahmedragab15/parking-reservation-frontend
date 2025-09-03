@@ -152,31 +152,6 @@ frontend/
             └── types.d.ts   # TypeScript types and interfaces
         └── middleware.ts   # Next.js middleware for route protection and role-based access
 
-
-            ├── admin/
-                ├── AdminDashboardSidebar.tsx
-                ├── CategoryRatesTab.tsx
-                ├── RateUpdateDialog.tsx
-                ├── RushHoursCard.tsx
-                ├── StatsCard.tsx
-                ├── VacationsCard.tsx
-                └── ZoneControlTab.tsx
-            ├── auth/
-                └── AuthInitializer.tsx
-            ├── checkpoint/
-                ├── CheckoutActions.tsx
-                ├── CheckoutResult.tsx
-                ├── SubscriptionVerification.tsx
-                ├── TicketInfo.tsx
-                └── TicketScanner.tsx
-            ├── gate/
-                ├── GateOpenAnimation.tsx
-                ├── GatesCardsSkeleton.tsx
-                ├── SubscriberTab.tsx
-                ├── TicketModal.tsx
-                ├── VisitorTab.tsx
-                └── ZoneCard.tsx
-
 ## Screenshots
 
    <img src="./frontend/public/preview/1.webp" >
