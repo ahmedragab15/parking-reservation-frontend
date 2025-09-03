@@ -434,7 +434,34 @@ app.get(BASE + '/admin/subscriptions', (req, res) => {
   res.json(db.subscriptions);
 });
 
+// Admin: Users
+app.get(BASE + '/admin/users', (req, res) => {
+  const user = req.user;
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({ status: 'error', message: 'Forbidden' });
+  }
+  res.json(db.users);
+});
+
+app.post(BASE + '/admin/users', (req, res) => {
+  const user = req.user;
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({ status: 'error', message: 'Forbidden' });
+  }
+  const { username, password, role } = req.body || {};
+  if (!username || !password || !role) {
+    return res.status(400).json({ status: 'error', message: 'Missing fields' });
+  }
+  if (db.users.find(u => u.username === username)) {
+    return res.status(409).json({ status: 'error', message: 'Username already exists' });
+  }
+  const newUser = { id: 'u_' + uuidv4().split('-')[0], username, password, role };
+  db.users.push(newUser);
+  res.status(201).json(newUser);
+});
+
 // Start server
 server.listen(PORT, () => {
   console.log(`Parking backend starter listening on http://localhost:${PORT}${BASE}`);
 });
+
