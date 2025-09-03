@@ -1,7 +1,15 @@
 import { Badge } from "../ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
 
-function ZoneCard({ zone, isSelected, onSelect, disabled }: { zone: Zone; isSelected: boolean; onSelect: () => void; disabled: boolean }) {
+interface IProps {
+  zone: Zone;
+  isSelected: boolean;
+  onSelect: () => void;
+  disabled: boolean;
+  showSelection?: boolean;
+}
+
+const ZoneCard = ({ zone, isSelected, onSelect, disabled }: IProps) => {
   return (
     <Card
       className={`cursor-pointer transition-all ${isSelected ? "border-primary ring-2 ring-primary" : ""} ${
@@ -38,6 +46,6 @@ function ZoneCard({ zone, isSelected, onSelect, disabled }: { zone: Zone; isSele
       </CardContent>
     </Card>
   );
-}
+};
 
 export default ZoneCard;

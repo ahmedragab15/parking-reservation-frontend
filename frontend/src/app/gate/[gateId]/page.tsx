@@ -1,17 +1,14 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 import { GateWebSocket } from "@/services/ws";
 import { getZonesByGate, getSubscription, postCheckin } from "@/services/api";
 import TicketModal from "@/components/gate/TicketModal";
 import GateOpenAnimation from "@/components/gate/GateOpenAnimation";
-import ZoneCard from "@/components/gate/ZoneCard";
+import VisitorTab from "@/components/gate/VisitorTab";
+import SubscriberTab from "@/components/gate/SubscriberTab";
 import { AxiosError } from "axios";
 
 export default function GateScreen() {
@@ -64,7 +61,7 @@ export default function GateScreen() {
     };
   }, [gateId, queryClient]);
 
-  const verifySubscription = useCallback(async () => {
+  const verifySubscription = async () => {
     if (!subscriptionId.trim()) {
       setSubscriptionError("Please enter a subscription ID");
       return;
@@ -83,35 +80,9 @@ export default function GateScreen() {
         setSubscriptionError("Error verifying subscription");
       }
     }
-  }, [subscriptionId]);
+  };
 
-  const checkinMutation = useMutation({
-    mutationFn: postCheckin,
-    onSuccess: (data) => {
-      setTicketData(data.ticket);
-      setShowTicketModal(true);
-      setShowGateAnimation(true);
-      setCheckinError(null);
-
-      setTimeout(() => setShowGateAnimation(false), 3000);
-
-      if (activeTab === "visitor") {
-        setSelectedZone(null);
-      } else {
-        setSubscriptionId("");
-        setSubscriptionData(null);
-      }
-    },
-    onError: (error: AxiosError) => {
-      if (error.response?.status === 409) {
-        setCheckinError("This subscription is already checked in");
-      } else {
-        setCheckinError("Check-in failed. Please try again.");
-      }
-    },
-  });
-
-  const handleCheckin = () => {
+  const handleCheckin = async () => {
     setCheckinError(null);
     const checkinData: CheckinRequest = {
       gateId,
@@ -129,18 +100,59 @@ export default function GateScreen() {
         setCheckinError("Please verify your subscription first");
         return;
       }
+      if (!selectedZone) {
+        setCheckinError("Please select a zone");
+        return;
+      }
+
+      const selectedZoneObj = zones?.find((z) => z.id === selectedZone);
+      if (selectedZoneObj?.categoryId !== subscriptionData.category) {
+        setCheckinError("Selected zone doesn't match your subscription category");
+        return;
+      }
+
+      if (!selectedZoneObj.open) {
+        setCheckinError("Selected zone is closed");
+        return;
+      }
+
+      checkinData.zoneId = selectedZone;
       checkinData.subscriptionId = subscriptionData.id;
     }
 
-    checkinMutation.mutate(checkinData);
+    try {
+      const data = await postCheckin(checkinData);
+      setTicketData(data.ticket);
+      setShowGateAnimation(true);
+      setCheckinError(null);
+
+      setTimeout(() => {
+        setShowGateAnimation(false);
+        setShowTicketModal(true);
+      }, 1500);
+
+      setTimeout(() => {
+        setSelectedZone(null);
+        setSubscriptionId("");
+        setSubscriptionData(null);
+      }, 1600);
+    } catch (err: unknown) {
+      const error = err as AxiosError<{ message: string }>;
+      console.error("Check-in error:", error);
+      if (error.response?.status === 409) {
+        setCheckinError("This subscription is already checked in");
+      } else if (error.response?.data?.message) {
+        setCheckinError(error.response.data.message);
+      } else {
+        setCheckinError("Check-in failed. Please try again.");
+      }
+    }
   };
 
   const isZoneAvailableForVisitor = (zone: Zone): boolean => zone.open && zone.availableForVisitors > 0;
-
   const isSubscriptionAllowedForZone = (zone: Zone): boolean => {
     if (!subscriptionData || !subscriptionData.active) return false;
     if (!zone.open) return false;
-
     return subscriptionData.category === zone.categoryId;
   };
 
@@ -159,103 +171,52 @@ export default function GateScreen() {
           <div className="text-sm text-gray-500">{currentTime.toLocaleDateString()}</div>
         </div>
       </header>
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "visitor" | "subscriber")} className="w-full">
+      <Tabs
+        value={activeTab}
+        onValueChange={(v) => {
+          setActiveTab(v as "visitor" | "subscriber");
+          setSelectedZone(null);
+          setCheckinError(null);
+        }}
+        className="w-full"
+      >
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="visitor">Visitor</TabsTrigger>
           <TabsTrigger value="subscriber">Subscriber</TabsTrigger>
         </TabsList>
         {/* Visitor Tab */}
         <TabsContent value="visitor">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-            {isLoading ? (
-              Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-32 w-full" />)
-            ) : error ? (
-              <div className="col-span-full text-center text-red-500">Error loading zones</div>
-            ) : zones && zones.length > 0 ? (
-              zones.map((zone) => (
-                <ZoneCard
-                  key={zone.id}
-                  zone={zone}
-                  isSelected={selectedZone === zone.id}
-                  onSelect={() => setSelectedZone(zone.id)}
-                  disabled={!isZoneAvailableForVisitor(zone)}
-                />
-              ))
-            ) : (
-              <div className="col-span-full text-center">No zones available for this gate</div>
-            )}
-          </div>
-          <div className="mt-6 flex justify-center">
-            <Button onClick={handleCheckin} disabled={!selectedZone || checkinMutation.isPending} size="lg">
-              {checkinMutation.isPending ? "Processing..." : "Check In"}
-            </Button>
-          </div>
+          <VisitorTab
+            zones={zones}
+            isLoading={isLoading}
+            error={error}
+            selectedZone={selectedZone}
+            onSelectZone={setSelectedZone}
+            isZoneAvailable={isZoneAvailableForVisitor}
+            onCheckin={handleCheckin}
+            checkinError={checkinError}
+          />
         </TabsContent>
         {/* Subscriber Tab */}
         <TabsContent value="subscriber">
-          <Card className="mt-4">
-            <CardHeader>
-              <CardTitle>Subscription Check-in</CardTitle>
-              <CardDescription>Enter your subscription ID to verify</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-2">
-                <Input
-                  value={subscriptionId}
-                  onChange={(e) => setSubscriptionId(e.target.value)}
-                  placeholder="Enter subscription ID"
-                  className="flex-1"
-                />
-                <Button onClick={verifySubscription} disabled={!subscriptionId.trim()}>
-                  Verify
-                </Button>
-              </div>
-              {subscriptionError && <div className="mt-2 text-red-500 text-sm">{subscriptionError}</div>}
-
-              {subscriptionData && (
-                <div className="mt-4 p-3 border rounded-md">
-                  <h3 className="font-semibold">Subscription Details</h3>
-                  <p>Name: {subscriptionData.userName}</p>
-                  <p>Status: {subscriptionData.active ? "Active" : "Inactive"}</p>
-                  <p>Category: {subscriptionData.category}</p>
-                  {subscriptionData.currentCheckins.length > 0 && <p className="text-yellow-600">Already checked in</p>}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-          {/* Zones Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-            {isLoading ? (
-              Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-32 w-full" />)
-            ) : error ? (
-              <div className="col-span-full text-center text-red-500">Error loading zones</div>
-            ) : zones && zones.length > 0 ? (
-              zones.map((zone) => (
-                <ZoneCard
-                  key={zone.id}
-                  zone={zone}
-                  isSelected={selectedZone === zone.id}
-                  onSelect={() => setSelectedZone(zone.id)}
-                  disabled={!isSubscriptionAllowedForZone(zone)}
-                />
-              ))
-            ) : (
-              <div className="col-span-full text-center">No zones available for this gate</div>
-            )}
-          </div>
-
-          <div className="mt-6 flex justify-center">
-            <Button onClick={handleCheckin} disabled={!subscriptionData || !selectedZone || checkinMutation.isPending} size="lg">
-              {checkinMutation.isPending ? "Processing..." : "Check In"}
-            </Button>
-          </div>
+          <SubscriberTab
+            zones={zones}
+            isLoading={isLoading}
+            error={error}
+            subscriptionId={subscriptionId}
+            onSubscriptionIdChange={setSubscriptionId}
+            subscriptionData={subscriptionData}
+            subscriptionError={subscriptionError}
+            onVerifySubscription={verifySubscription}
+            isZoneAvailable={isSubscriptionAllowedForZone}
+            onCheckin={handleCheckin}
+            checkinError={checkinError}
+            selectedZone={selectedZone}
+            onSelectZone={setSelectedZone}
+          />
         </TabsContent>
       </Tabs>
-      {/* Error message */}
-      {checkinError && <div className="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded-md">{checkinError}</div>}
-      {/* Ticket Modal */}
       <TicketModal isOpen={showTicketModal} onClose={() => setShowTicketModal(false)} ticket={ticketData} />
-      {/* Gate Open Animation */}
       <GateOpenAnimation isOpen={showGateAnimation} onClose={() => setShowGateAnimation(false)} />
     </div>
   );
