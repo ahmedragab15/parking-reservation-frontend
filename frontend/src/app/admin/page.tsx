@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import { useRef } from "react";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
 import useCustomQuery from "@/hooks/useCustomQuery";
 import { useGateWebSocket } from "@/hooks/useGateWebSocket";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,13 +31,100 @@ const AdminDashboard = () => {
     url: "/admin/reports/parking-state",
   });
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
+  const activityFeedRef = useRef<HTMLDivElement>(null);
+  const zoneStatusRef = useRef<HTMLDivElement>(null);
+  gsap.registerPlugin(useGSAP);
+  useGSAP(
+    () => {
+      if (containerRef.current) {
+        const elements = [headerRef.current, statsRef.current, activityFeedRef.current, zoneStatusRef.current].filter(Boolean);
+        gsap.fromTo(
+          elements,
+          {
+            opacity: 0,
+            y: 30,
+            scale: 0.95,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.6,
+            stagger: 0.15,
+            ease: "power2.out",
+          }
+        );
+      }
+    },
+    { scope: containerRef }
+  );
+  useGSAP(
+    () => {
+      if (statsRef.current && !reportLoading) {
+        const cards = statsRef.current.querySelectorAll(".stats-card");
+        gsap.fromTo(
+          cards,
+          {
+            opacity: 0,
+            y: 20,
+            scale: 0.9,
+            rotationY: -15,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotationY: 0,
+            duration: 0.5,
+            stagger: 0.1,
+            delay: 0.3,
+            ease: "back.out(1.7)",
+          }
+        );
+      }
+    },
+    { dependencies: [reportLoading], scope: statsRef }
+  );
+  useGSAP(
+    () => {
+      if (zoneStatusRef.current && parkingState) {
+        const zoneCards = zoneStatusRef.current.querySelectorAll(".zone-card");
+        gsap.fromTo(
+          zoneCards,
+          {
+            opacity: 0,
+            y: 15,
+            scale: 0.95,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.4,
+            stagger: 0.08,
+            delay: 0.2,
+            ease: "power2.out",
+          }
+        ); 
+      }
+    },
+    { dependencies: [parkingState], scope: zoneStatusRef }
+  );
+
   const totalSlots = parkingState?.reduce((sum: number, zone: any) => sum + zone.totalSlots, 0) || 0;
   const totalOccupied = parkingState?.reduce((sum: number, zone: any) => sum + zone.occupied, 0) || 0;
   const totalSubscribers = parkingState?.reduce((sum: number, zone: any) => sum + zone.subscriberCount, 0) || 0;
   const occupancyRate = totalSlots > 0 ? ((totalOccupied / totalSlots) * 100).toFixed(1) : "0";
 
   if (reportLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+      </div>
+    );
   }
 
   const statsData = [
@@ -65,25 +155,29 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div ref={containerRef} className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div ref={headerRef} className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
           <p className="text-gray-600">Welcome back, {user && user.username}</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Badge variant={isConnected ? "default" : "destructive"}>{isConnected ? "Connected" : "Disconnected"}</Badge>
+          <Badge variant={isConnected ? "default" : "destructive"}>
+            {isConnected ? "Connected" : "Disconnected"}
+          </Badge>
         </div>
       </div>
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statsData.map((stat) => (
-          <StatsCard key={stat.title} title={stat.title} value={stat.value} description={stat.description} icon={stat.icon} />
+          <div key={stat.title} className="stats-card">
+            <StatsCard title={stat.title} value={stat.value} description={stat.description} icon={stat.icon} />
+          </div>
         ))}
       </div>
       {/* Live Activity Feed */}
-      <Card>
+      <Card ref={activityFeedRef}>
         <CardHeader>
           <CardTitle>Live Activity Feed</CardTitle>
           <CardDescription>Real-time admin actions and system updates</CardDescription>
@@ -94,7 +188,7 @@ const AdminDashboard = () => {
               <p className="text-gray-500 text-center py-8">No recent activity</p>
             ) : (
               adminUpdates.map((update: any, index: number) => (
-                <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div key={index} className="activity-item flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div>
                     <p className="font-medium text-sm">{update.action.replace(/-/g, " ").replace(/\b\w/g, (l: string) => l.toUpperCase())}</p>
                     <p className="text-xs text-gray-500">
@@ -113,7 +207,7 @@ const AdminDashboard = () => {
       </Card>
       {/* Quick Zone Status */}
       {parkingState && (
-        <Card>
+        <Card ref={zoneStatusRef}>
           <CardHeader>
             <CardTitle>Zone Status Overview</CardTitle>
             <CardDescription>Current status of all parking zones</CardDescription>
@@ -121,7 +215,7 @@ const AdminDashboard = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {parkingState.map((zone: any) => (
-                <div key={zone.zoneId} className="p-4 border rounded-lg">
+                <div key={zone.zoneId} className="zone-card p-4 border rounded-lg">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-medium">{zone.name}</h3>
                     <Badge variant={zone.open ? "default" : "secondary"}>{zone.open ? "Open" : "Closed"}</Badge>
