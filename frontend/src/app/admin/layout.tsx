@@ -1,13 +1,12 @@
 "use client";
 import { ReactNode, useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { useGateWebSocket } from "@/hooks/useGateWebSocket";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import ActiveLink from "@/components/shared/ActiveLink";
-import { LogOut, Wifi, WifiOff } from "lucide-react";
-import { dashboardSidebar } from "@/constants";
+import { Wifi, WifiOff, Menu } from "lucide-react";
 import axiosInstance from "@/config/axios.config";
+import { Button } from "@/components/ui/button";
+import AdminDashboardSidebar from "@/components/admin/AdminDashboardSidebar";
 
 interface LayoutProps {
   children: ReactNode;
@@ -15,6 +14,7 @@ interface LayoutProps {
 
 const AdminLayout = ({ children }: LayoutProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const [gateIds, setGateIds] = useState<string[]>([]);
   useEffect(() => {
@@ -25,46 +25,54 @@ const AdminLayout = ({ children }: LayoutProps) => {
   }, []);
   const { isConnected } = useGateWebSocket(gateIds);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.getElementById("mobile-sidebar");
+      const menuButton = document.getElementById("menu-button");
+      if (sidebarOpen && sidebar && !sidebar.contains(event.target as Node) && menuButton && !menuButton.contains(event.target as Node)) {
+        setSidebarOpen(false);
+      }
+    };
+    if (sidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [sidebarOpen]);
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg">
-        <div className="flex h-full flex-col">
-          <div className="flex h-16 items-center justify-between px-6 border-b">
-            <h1 className="text-xl font-semibold">Admin Dashboard</h1>
-            <div className="flex items-center space-x-2">
-              {isConnected ? <Wifi className="h-4 w-4 text-green-500" /> : <WifiOff className="h-4 w-4 text-red-500" />}
-            </div>
-          </div>
-          <nav className="flex-1 space-y-1 px-4 py-6">
-            {dashboardSidebar.map((item) => {
-              return (
-                <ActiveLink
-                  key={item.name}
-                  href={item.href}
-                  className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium transition-colors
-                  "
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.name}</span>
-                </ActiveLink>
-              );
-            })}
-          </nav>
-          <div className="border-t p-4">
-            <div className="flex items-center justify-between">
-              <div className="text-sm">
-                <p className="font-medium">{user?.username || "username"}</p>
-                <p className="text-gray-500">Administrator</p>
-              </div>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <LogOut className="h-4 w-4 text-red-600" />
-              </Button>
-            </div>
+      {/* Mobile menu button */}
+      <div className="lg:hidden sticky top-21 left-0 right-0 z-50 bg-white border-b px-4 py-3">
+        <div className="flex items-center justify-between">
+          <Button id="menu-button" variant="ghost" size="sm" onClick={() => setSidebarOpen(true)} className="p-2">
+            <Menu className="h-5 w-5" />
+          </Button>
+          <h1 className="text-lg font-semibold">Admin Dashboard</h1>
+          <div className="flex items-center space-x-2">
+            {isConnected ? <Wifi className="h-4 w-4 text-green-500" /> : <WifiOff className="h-4 w-4 text-red-500" />}
           </div>
         </div>
       </div>
-      <div className="pl-64">
-        <main className="p-6">{children}</main>
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && <div className="lg:hidden fixed inset-0 z-40 bg-black/30 bg-opacity-50 transition-opacity" />}
+      {/* Mobile sidebar */}
+      <div
+        id="mobile-sidebar"
+        className={`lg:hidden fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <AdminDashboardSidebar isMobile={true} user={user} isConnected={isConnected} setSidebarOpen={setSidebarOpen} />
+      </div>
+      {/* Desktop sidebar */}
+      <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-50 lg:block lg:w-64 lg:bg-white lg:shadow-lg">
+        <AdminDashboardSidebar user={user} isConnected={isConnected} setSidebarOpen={setSidebarOpen} />
+      </div>
+      {/* Main content */}
+      <div className="lg:pl-64">
+        <main className="p-4 md:p-6 pt-20 lg:pt-6">{children}</main>
       </div>
     </div>
   );
