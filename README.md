@@ -102,13 +102,27 @@ frontend/
             └── StoreProvider.tsx   # Redux store provider
         ├── components/
             ├── admin/
-                └── StatsCard.tsx   # Admin stats card component
+                ├── AdminDashboardSidebar.tsx   # Sidebar for admin dashboard navigation
+                ├── CategoryRatesTab.tsx   # Tab for managing and displaying category rates
+                ├── RateUpdateDialog.tsx   # Dialog component to update rates
+                ├── RushHoursCard.tsx   # Card component to display/manage rush hours
+                ├── StatsCard.tsx   # Admin stats card component
+                ├── VacationsCard.tsx   # Card component for managing/displaying vacations
+                └── ZoneControlTab.tsx   # Tab for controlling and managing zones
             ├── auth/
                 └── AuthInitializer.tsx   # Initializes user authentication on app load
+            ├── checkpoint/
+                ├── CheckoutActions.tsx   # Actions available during checkout process
+                ├── CheckoutResult.tsx   # Show the result of a checkout
+                ├── SubscriptionVerification.tsx   # Verifies user subscription during checkpoint
+                ├── TicketInfo.tsx   # Displays detailed ticket information
+                └── TicketScanner.tsx   # Scanner component for reading tickets
             ├── gate/
                 ├── GateOpenAnimation.tsx   # Gate open animation component
                 ├── GatesCardsSkeleton.tsx   # Skeleton loading for gates
+                ├── SubscriberTab.tsx   # Tab for managing and viewing subscribers
                 ├── TicketModal.tsx   # Modal for ticket actions
+                ├── VisitorTab.tsx   # Tab for managing and viewing visitors
                 └── ZoneCard.tsx   # Single parking zone card component
             ├── layout/
                 ├── Footer.tsx   # App footer
@@ -137,6 +151,31 @@ frontend/
         ├── utils/
             └── types.d.ts   # TypeScript types and interfaces
         └── middleware.ts   # Next.js middleware for route protection and role-based access
+
+
+            ├── admin/
+                ├── AdminDashboardSidebar.tsx
+                ├── CategoryRatesTab.tsx
+                ├── RateUpdateDialog.tsx
+                ├── RushHoursCard.tsx
+                ├── StatsCard.tsx
+                ├── VacationsCard.tsx
+                └── ZoneControlTab.tsx
+            ├── auth/
+                └── AuthInitializer.tsx
+            ├── checkpoint/
+                ├── CheckoutActions.tsx
+                ├── CheckoutResult.tsx
+                ├── SubscriptionVerification.tsx
+                ├── TicketInfo.tsx
+                └── TicketScanner.tsx
+            ├── gate/
+                ├── GateOpenAnimation.tsx
+                ├── GatesCardsSkeleton.tsx
+                ├── SubscriberTab.tsx
+                ├── TicketModal.tsx
+                ├── VisitorTab.tsx
+                └── ZoneCard.tsx
 
 ## Screenshots
 
