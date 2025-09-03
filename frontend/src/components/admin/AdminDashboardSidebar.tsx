@@ -36,6 +36,7 @@ const AdminDashboardSidebar = ({ isMobile = false, user, isConnected, setSidebar
                         href={item.href}
                         onClick={() => isMobile && setSidebarOpen(false)}
                         className="flex items-center space-x-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-gray-100"
+                        exact
                     >
                         <item.icon className="h-5 w-5 flex-shrink-0" />
                         <span>{item.name}</span>

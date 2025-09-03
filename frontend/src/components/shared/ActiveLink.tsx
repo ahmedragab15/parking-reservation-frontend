@@ -12,9 +12,9 @@ interface IProps {
   onClick?: () => void;
 }
 
-const ActiveLink = ({ href, children, className, activeClassName = "text-blue-700", onClick }: IProps) => {
+const ActiveLink = ({ href, children, className, activeClassName = "text-blue-700",exact, onClick }: IProps) => {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive = exact ? pathname === href : pathname === href || pathname.startsWith(href + "/");
 
   return (
     <Link href={href} className={cn(className, isActive && activeClassName)} onClick={onClick}>
