@@ -3,12 +3,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-const ActiveLink = ({ href, children, className, activeClassName = "text-blue-700" }: ActiveLinkProps) => {
+interface IProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+  activeClassName?: string;
+  exact?: boolean;
+  onClick?: () => void;
+}
+
+const ActiveLink = ({ href, children, className, activeClassName = "text-blue-700", onClick }: IProps) => {
   const pathname = usePathname();
   const isActive = pathname === href;
 
   return (
-    <Link href={href} className={cn(className, isActive && activeClassName)}>
+    <Link href={href} className={cn(className, isActive && activeClassName)} onClick={onClick}>
       {children}
     </Link>
   );

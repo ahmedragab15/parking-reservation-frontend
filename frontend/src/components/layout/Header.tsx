@@ -55,6 +55,7 @@ const Header = () => {
                   <ActiveLink
                     href="/admin"
                     className="font-medium hover:text-blue-700 block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                    onClick={() => setMobileNav(false)}
                   >
                     Admin Dashboard
                   </ActiveLink>
@@ -65,6 +66,7 @@ const Header = () => {
                   <ActiveLink
                     href={href}
                     className="font-medium hover:text-blue-700 block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0"
+                    onClick={() => setMobileNav(false)}
                   >
                     {name}
                   </ActiveLink>
@@ -73,12 +75,19 @@ const Header = () => {
             </ul>
           )}
           {isAuthenticated ? (
-            <Button variant="outline" onClick={handleLogout} className="flex items-center gap-2 md:ml-4">
+            <Button
+              variant="outline"
+              onClick={() => {
+                handleLogout();
+                setMobileNav(false);
+              }}
+              className="flex items-center gap-2 md:ml-4"
+            >
               <LogOut className="h-4 w-4" />
               Logout
             </Button>
           ) : (
-            <Button className="flex items-center gap-2 md:ml-4">
+            <Button className="flex items-center gap-2 md:ml-4" onClick={() => setMobileNav(false)}>
               <LogIn className="h-4 w-4" />
               <Link href="/login">Login</Link>
             </Button>

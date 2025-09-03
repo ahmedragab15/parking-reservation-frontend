@@ -7,14 +7,6 @@ declare interface IDashboardSidebar extends INavItems {
     icon: RefAttributes<SVGSVGElement>;
 }
 
-declare interface ActiveLinkProps {
-    href: string;
-    children: React.ReactNode;
-    className?: string;
-    activeClassName?: string;
-    exact?: boolean;
-}
-
 declare interface Category {
     id: string;
     name: string;
